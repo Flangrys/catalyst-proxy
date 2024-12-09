@@ -1,0 +1,28 @@
+# Server configuration - Required
+[server]
+max-workers = 512
+motd = "Another Mineraft Server"
+
+# Basic configuration
+# Objetive: Forward traffic from localhost:25565 to localhost:25900.
+# Topics: Forwarding
+
+[[workers]]
+listen = "localhost:25565"
+forward = "localhost:25590"
+
+
+# Recomended configuratio
+# Objective: Forward traffic from mc.playminecraft.org to lobby.mcbackend.arpa
+
+[[workers]]
+listen = "mc.playminecraft.org"
+forwarders = [
+    { addrs = "lobby0.mcbackend.arpa", weight = 1 },  # The server will prior this forwarder.
+    { addrs = "lobby1.mcbackend.arpa", weight = 5 },
+    { addrs = "lobby2.mcbackend.arpa", weight = 10 },
+]
+algoritm = "wrr" # Weighted Round Robin Algoritm.
+
+# Advanced configuration - WIP
+# Objetive: --
