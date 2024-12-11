@@ -22,7 +22,10 @@ forwarders = [
     { addrs = "lobby1.mcbackend.arpa", weight = 5 },
     { addrs = "lobby2.mcbackend.arpa", weight = 10 },
 ]
-algoritm = "wrr" # Weighted Round Robin Algoritm.
+
+# algoritm = "rr"   # Clasic Round Robin.
+algoritm = "wrr"    # Weighted Round Robin Algoritm.
+# algoritm = "pbrr" # Priority-based Round Robin Algorithm.
 
 # Advanced configuration - WIP
 # Objetive: --

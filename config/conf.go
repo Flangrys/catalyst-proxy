@@ -1,30 +1,37 @@
 package config
 
 import (
+	"errors"
+
 	"github.com/BurntSushi/toml"
 )
 
 var (
 	Meta toml.MetaData
+	conf Configuration = Configuration{}
+
+	ErrMissingServerDirective  = errors.New("missing 'server' key in the configuration")
+	ErrMissingWorkerDirectives = errors.New("missing 'worker' key/s in the configuration")
 )
 
-func New(path string) (Configuration, error) {
+func New(path string) (*Configuration, error) {
 
-	var (
-		err  error
-		conf Configuration = Configuration{}
-	)
+	var err error
 
 	Meta, err = toml.DecodeFile(path, &conf)
 
-	return conf, err
+	return &conf, err
 }
 
-func (cfg *Configuration) ValidateConfig() (bool, string) {
+func (cfg *Configuration) TestConfig() (bool, error) {
 
 	if !Meta.IsDefined("server") {
-		return false, "The 'server' table is not defined."
+		return false, ErrMissingServerDirective
 	}
 
-	return true, ""
+	if !Meta.IsDefined("workers") {
+		return false, ErrMissingWorkerDirectives
+	}
+
+	return true, nil
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/flangrys/catalyst-proxy/cli"
 	"github.com/flangrys/catalyst-proxy/config"
+	"github.com/flangrys/catalyst-proxy/services"
 	logger "github.com/sirupsen/logrus"
 	formatter "github.com/x-cray/logrus-prefixed-formatter"
 )
@@ -38,10 +39,25 @@ func main() {
 		logger.Fatalf("An error ocurred during the parsing: %s", err)
 	}
 
-	if ok, message := conf.ValidateConfig(); !ok {
+	if ok, message := conf.TestConfig(); !ok {
 		logger.Fatalf("Invalid config file: %s", message)
 
 	} else {
 		logger.Info("Flags succesfully validated.")
 	}
+
+	// Setup Scheduler.
+	sched, err := services.NewWithConfig(conf)
+
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	if sched == nil {
+		logger.Fatal("The scheduler is nil.")
+	}
+
+	sched.InitLifecycleManager()
+
+	sched.WaitAll()
 }
